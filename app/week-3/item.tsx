@@ -5,9 +5,11 @@ export default function Item({
 }) {
   return (
     <div className="item">
-      <h3>{item.name}</h3>
-      <p>Quantity: {item.quantity}</p>
-      <p>Category: {item.category}</p>
+      <ul>
+        <h3>{item.name}</h3>
+        <p>Quantity: {item.quantity}</p>
+        <p>Category: {item.category}</p>
+      </ul>
     </div>
   );
 }

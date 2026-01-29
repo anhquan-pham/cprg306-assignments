@@ -92,7 +92,16 @@ export default function ItemList(): JSX.Element {
   return (
     <div>
       {items.map((item, index) => (
-        <Item key={index} item={item} />
+        <div
+          key={index}
+          style={{
+            border: "1px solid #ccc",
+            padding: "1rem",
+            marginBottom: "1rem",
+          }}
+        >
+          <Item item={item} />
+        </div>
       ))}
     </div>
   );

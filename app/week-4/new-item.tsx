@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { FormEvent } from "react";
 
 export default function NewItem() {
   const [name, setName] = useState("");
@@ -26,7 +27,7 @@ export default function NewItem() {
     setNameError("");
   };
 
-  const submitFunction = (event) => {
+  const submitFunction = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmed = name.trim();
 

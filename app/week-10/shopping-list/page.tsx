@@ -5,7 +5,7 @@ import { useUserAuth } from "../_utils/auth-context";
 import { useRouter } from "next/navigation";
 import ItemList from "./item-list";
 import NewItem from "./new-item";
-import itemsData from "./items.json";
+import { getItems, addItem } from "../_services/shopping-list-service.js";
 import MealIdeas from "./meal-ideas";
 
 type Item = {
@@ -19,8 +19,14 @@ export default function Week6() {
   const { user } = useUserAuth();
   const router = useRouter();
 
-  const [items, setItems] = useState<Item[]>(itemsData);
+  const [items, setItems] = useState<Item[]>([]);
   const [selectedItemName, setSelectedItemName] = useState("");
+
+  const loadItems = async () => {
+    if (!user?.uid) return;
+    const fetchedItems = await getItems(user.uid);
+    setItems(fetchedItems);
+  };
 
   // if not logged in, redirect back to landing page
   useEffect(() => {
@@ -29,15 +35,24 @@ export default function Week6() {
     }
   }, [user, router]);
 
+  useEffect(() => {
+    if (user) {
+      loadItems();
+    }
+  }, [user]);
+
   if (user === null) {
     // don't render the shopping list at all until we know the user is available
     return null;
   }
 
-  const handleAddItem = (newItem: Omit<Item, "id">) => {
+  const handleAddItem = async (newItem: Omit<Item, "id">) => {
+    if (!user?.uid) return;
+
+    const newId = await addItem(user.uid, newItem);
     const itemWithId: Item = {
       ...newItem,
-      id: crypto.randomUUID(),
+      id: newId,
     };
 
     setItems((prevItems) => [...prevItems, itemWithId]);

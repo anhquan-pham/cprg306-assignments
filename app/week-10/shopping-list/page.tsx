@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect } from "react";
 import { useUserAuth } from "../_utils/auth-context";
 import { useRouter } from "next/navigation";
@@ -16,7 +18,7 @@ type Item = {
 };
 
 export default function Week6() {
-  const { user } = useUserAuth();
+  const { user, loading } = useUserAuth();
   const router = useRouter();
 
   const [items, setItems] = useState<Item[]>([]);
@@ -30,10 +32,10 @@ export default function Week6() {
 
   // if not logged in, redirect back to landing page
   useEffect(() => {
-    if (user === null) {
+    if (!loading && !user) {
       router.push("/week-8");
     }
-  }, [user, router]);
+  }, [user, loading, router]);
 
   useEffect(() => {
     if (user) {
@@ -41,8 +43,13 @@ export default function Week6() {
     }
   }, [user]);
 
-  if (user === null) {
-    // don't render the shopping list at all until we know the user is available
+  if (loading) {
+    // wait for auth to load before rendering
+    return null;
+  }
+
+  if (!user) {
+    // don't render the shopping list at all if not authenticated
     return null;
   }
 
